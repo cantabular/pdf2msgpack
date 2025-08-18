@@ -513,7 +513,7 @@ BaseStream *open_file(const std::string filename) {
     exit(5);
   }
   Object obj;
-  return new FileStream(file.release(), 0, false, file->size(), Object(objNull));
+  return new FileStream(file.release(), 0, false, file->size(), Object::null());
 }
 
 std::string parse_page_range(std::string value, Options *options) {
