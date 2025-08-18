@@ -345,62 +345,58 @@ TextPagePtr page_to_text_page(Page *page) {
   return TextPagePtr(dev->takeText(), TextPageDecRef);
 }
 
-int count_glyphs(std::vector<TextWordSelection*> **lines, int n_lines) {
-  int total_glyphs = 0;
+int count_glyphs(const std::vector<std::vector<std::unique_ptr<TextWordSelection>>>& word_list) {
+    int total_glyphs = 0;
 
-  for (int i = 0; i < n_lines; i++) {
-    auto *words = lines[i];
-    total_glyphs += words->size() - 1; // spaces
-    for (std::size_t j = 0; j < words->size(); j++) {
-      auto *x = reinterpret_cast<TextWordSelection *>((*words)[j]);
-      auto *word = reinterpret_cast<const TextWord *>(x->getWord());
-      total_glyphs += word->getLength();
+    // Use a range-based for loop to iterate over each line.
+    for (const auto& line : word_list) {
+        // Add the number of spaces between words (if any).
+        if (!line.empty()) {
+            total_glyphs += line.size() - 1;
+        }
+
+        // Iterate over each word in the line.
+        for (const auto& word_selection : line) {
+            // Access the TextWord directly through the unique_ptr. No cast needed.
+            const TextWord *word = word_selection->getWord();
+            total_glyphs += word->getLength();
+        }
     }
-  }
-  return total_glyphs;
+    return total_glyphs;
 }
 
-void dump_glyphs(std::vector<TextWordSelection*> **lines, int n_lines) {
-  // Lines
-  for (int i = 0; i < n_lines; i++) {
-    std::vector<TextWordSelection*> *line_words = lines[i];
 
-    // Words
-    for (std::size_t j = 0; j < line_words->size(); j++) {
-      auto word_sel = reinterpret_cast<TextWordSelection *>((*line_words)[j]);
-      const TextWord *word = word_sel->getWord();
+void dump_glyphs(const std::vector<std::vector<std::unique_ptr<TextWordSelection>>>& word_list) {
+    // Iterate over each line.
+    for (const auto& line : word_list) {
+        // Use a traditional indexed loop here to easily access the next word (j+1) for spacing.
+        for (std::size_t j = 0; j < line.size(); ++j) {
+            const auto& word_sel = line[j];
+            const TextWord *word = word_sel->getWord();
 
-      // Glyphs
-      for (int k = 0; k < word->getLength(); k++) {
-        double x1, y1, x2, y2;
-        word->getCharBBox(k, &x1, &y1, &x2, &y2);
+            // Dump all glyphs in the current word.
+            for (int k = 0; k < word->getLength(); ++k) {
+                double x1, y1, x2, y2;
+                word->getCharBBox(k, &x1, &y1, &x2, &y2);
+                auto rect = std::make_tuple(x1, y1, x2, y2);
+                packer.pack(std::make_tuple(rect, toUTF8(word, k)));
+            }
 
-        auto rect = std::make_tuple(x1, y1, x2, y2);
-        packer.pack(std::make_tuple(rect, toUTF8(word, k)));
-      }
+            // Add the space between the current word and the next one.
+            if (j < line.size() - 1) {
+                double x1, y1, x2, y2; // BBox of current word
+                word->getBBox(&x1, &y1, &x2, &y2);
 
-      double x1, y1, x2, y2;
-      double x3, y3, x4, y4;
-      word->getBBox(&x1, &y1, &x2, &y2);
-
-      // Spaces
-      if (j < line_words->size() - 1) {
-        auto word_sel =
-            reinterpret_cast<TextWordSelection *>((*line_words)[j + 1]);
-        word_sel->getWord()->getBBox(&x3, &y3, &x4, &y4);
-        // space is from one word to other and with the same height as
-        // first word.
-
-        x1 = x2;
-        // y1 = y1; (implicit)
-        x2 = x3;
-        // y2 = y2; (implicit)
-
-        auto rect = std::make_tuple(x1, y1, x2, y2);
-        packer.pack(std::make_tuple(rect, " "));
-      }
+                double x3, y3, x4, y4; // BBox of next word
+                const auto& next_word_sel = line[j + 1];
+                next_word_sel->getWord()->getBBox(&x3, &y3, &x4, &y4);
+                
+                // Define the space from the end of the current word to the start of the next.
+                auto space_rect = std::make_tuple(x2, y1, x3, y2);
+                packer.pack(std::make_tuple(space_rect, " "));
+            }
+        }
     }
-  }
 }
 
 void dump_page_glyphs(Page *page) {
@@ -410,24 +406,12 @@ void dump_page_glyphs(Page *page) {
 
   PDFRectangle whole_page(-inf, -inf, inf, inf);
 
-  int n_lines;
-  auto deleter = [&](std::vector<TextWordSelection*> **lines) {
-    for (int i = 0; i < n_lines; i++) {
-      for (auto entry : *(lines[i])) {
-        delete entry;
-      }
-      delete lines[i];
-    }
-    gfree(lines);
-  };
-  auto word_list = std::unique_ptr<std::vector<TextWordSelection*> *, decltype(deleter)>(
-      text->getSelectionWords(&whole_page, selectionStyleGlyph, &n_lines),
-      deleter);
+  auto word_list = text->getSelectionWords(&whole_page, selectionStyleGlyph);
 
-  int total_glyphs = count_glyphs(word_list.get(), n_lines);
+  int total_glyphs = count_glyphs(word_list);
 
   packer.pack_array(total_glyphs);
-  dump_glyphs(word_list.get(), n_lines);
+  dump_glyphs(word_list);
 }
 
 void dump_page_paths(Page *page) {
