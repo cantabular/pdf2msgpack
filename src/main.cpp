@@ -85,6 +85,7 @@ static int install_syscall_filter(void) {
       ALLOW_SYSCALL(brk),
       ALLOW_SYSCALL(exit),
       ALLOW_SYSCALL(exit_group),
+      ALLOW_SYSCALL(openat),
       KILL_PROCESS,
       // clang-format on
   };
