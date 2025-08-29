@@ -329,7 +329,7 @@ TextPagePtr page_to_text_page(Page *page) {
   auto gfx = std::unique_ptr<Gfx>(
       page->createGfx(dev.get(), 72.0, 72.0, 0, false, /* useMediaBox */
                       true,                            /* Crop */
-                      -1, -1, -1, -1, false,           /* printing */
+                      -1, -1, -1, -1,                  /* printing */
                       NULL, NULL));
 
   gfx->saveState();
@@ -436,7 +436,7 @@ void dump_page_paths(Page *page) {
   auto gfx = std::unique_ptr<Gfx>(
       page->createGfx(dev.get(), 72.0, 72.0, 0, false, /* useMediaBox */
                       true,                            /* Crop */
-                      -1, -1, -1, -1, false,           /* printing */
+                      -1, -1, -1, -1,                  /* printing */
                       NULL, NULL));
 
   page->display(gfx.get());
