@@ -85,6 +85,7 @@ static int install_syscall_filter(void) {
       ALLOW_SYSCALL(brk),
       ALLOW_SYSCALL(exit),
       ALLOW_SYSCALL(exit_group),
+      ALLOW_SYSCALL(openat),
       KILL_PROCESS,
       // clang-format on
   };
@@ -311,7 +312,7 @@ void TextPageDecRef(TextPage *text_page) { text_page->decRefCnt(); }
 void render_annotations(std::unique_ptr<Gfx> &gfx, Annots *annots) {
   gfx->saveState();
 
-  for (Annot *annot : annots->getAnnots()) {
+  for (const std::shared_ptr<Annot> &annot : annots->getAnnots()) {
     annot->draw(gfx.get(), false);
   }
 
@@ -508,7 +509,7 @@ BaseStream *open_file(const std::string filename) {
     exit(5);
   }
   Object obj;
-  return new FileStream(file.release(), 0, false, file->size(), Object(objNull));
+  return new FileStream(file.release(), 0, false, file->size(), Object::null());
 }
 
 std::string parse_page_range(std::string value, Options *options) {
