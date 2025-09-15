@@ -5,8 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/kr/pretty"
-
 	"github.com/sensiblecodeio/pdf2msgpack/go/pkg/p2m"
 )
 
@@ -23,7 +21,7 @@ func main() {
 
 	if r.Meta.FontInfo != nil {
 		for _, fi := range *r.Meta.FontInfo {
-			pretty.Println(fi)
+			log.Printf("FontInfo: %+v\n", fi)
 		}
 	}
 
