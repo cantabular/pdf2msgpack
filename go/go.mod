@@ -1,6 +1,6 @@
 module github.com/sensiblecodeio/pdf2msgpack/go
 
-go 1.19
+go 1.25.1
 
 require github.com/tinylib/msgp v1.1.2
 
