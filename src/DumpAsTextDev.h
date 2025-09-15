@@ -314,8 +314,9 @@ public:
     return OutputDev::eoFill(A);
   }
 
-  bool tilingPatternFill(GfxState *A, Gfx *B, Catalog *C, GfxTilingPattern *D, const double *E,
+  bool tilingPatternFill(GfxState *A, Gfx *B, Catalog *C, GfxTilingPattern *D, const std::array<double, 6> &E,
                           int F, int G, int H, int I, double J, double K) {
+
     printf("tilingPatternFill\n");
     return OutputDev::tilingPatternFill(A, B, C, D, E, F, G, H, I, J, K);
   }
@@ -547,7 +548,7 @@ public:
     return OutputDev::checkTransparencyGroup(A, B);
   }
 
-  void beginTransparencyGroup(GfxState *A, double *B, GfxColorSpace *C, bool D,
+  void beginTransparencyGroup(GfxState *A, const std::array<double, 4> &B, GfxColorSpace *C, bool D,
                               bool E, bool F) {
     printf("beginTransparencyGroup\n");
     return OutputDev::beginTransparencyGroup(A, B, C, D, E, F);
@@ -558,12 +559,12 @@ public:
     return OutputDev::endTransparencyGroup(A);
   }
 
-  void paintTransparencyGroup(GfxState *A, double *B) {
+  void paintTransparencyGroup(GfxState *A, const std::array<double, 4> &B) {
     printf("paintTransparencyGroup\n");
     return OutputDev::paintTransparencyGroup(A, B);
   }
 
-  void setSoftMask(GfxState *A, double *B, bool C, Function *D, GfxColor *E) {
+  void setSoftMask(GfxState *A, const std::array<double, 4> &B, bool C, Function *D, GfxColor *E) {
     printf("setSoftMask\n");
     return OutputDev::setSoftMask(A, B, C, D, E);
   }
