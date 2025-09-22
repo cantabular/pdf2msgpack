@@ -114,5 +114,5 @@ def build(ctx):
         target="pdf2msgpack",
         use="poppler",
         features=features,
-        includes=["vendor/github.com/sensiblecodeio/msgpack-c/include"],
+        includes=["vendor/github.com/msgpack/msgpack-c/include"],
     )

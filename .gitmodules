@@ -14,7 +14,6 @@
 	path = vendor/github.com/sensiblecodeio/poppler
 	url = https://github.com/sensiblecodeio/poppler.git
 	branch = pdf2msgpack
-[submodule "vendor/github.com/sensiblecodeio/msgpack-c"]
-	path = vendor/github.com/sensiblecodeio/msgpack-c
-	url = https://github.com/sensiblecodeio/msgpack-c.git
-	branch = cpp-6.1.0-with-4.1.1-float-double-behaviour
+[submodule "vendor/github.com/msgpack/msgpack-c"]
+	path = vendor/github.com/msgpack/msgpack-c
+	url = https://github.com/msgpack/msgpack-c.git
