@@ -10,7 +10,10 @@ std::string toUTF8(
 ) {
 	std::string result;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
+#pragma GCC diagnostic pop
 	result = convertor.to_bytes(source);
 
 	return result;
