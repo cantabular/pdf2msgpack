@@ -17,7 +17,7 @@ std::string toUTF8(
 }
 
 // toUTF8 returns the whole string in UTF-8.
-std::string toUTF8(Unicode *u, int n) {
+std::string toUTF8(const Unicode *u, int n) {
 	std::u32string s;
 	for (int i = 0; i < n; i++) {
 		s += static_cast<char32_t>(*(u + i));
