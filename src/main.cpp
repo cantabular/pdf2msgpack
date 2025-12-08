@@ -203,12 +203,12 @@ void pack_stream_content(Stream *stream) {
   stream->fillGooString(&content);
   stream->close();
 
-  packer.pack_bin(content.getLength());
-  packer.pack_bin_body(content.toStr().c_str(), content.getLength());
+  packer.pack_bin(content.size());
+  packer.pack_bin_body(content.toStr().c_str(), content.size());
 }
 
 void pack_string(const GooString *string) {
-  if (!string || string->getLength() <= 0)
+  if (!string || string->size() <= 0)
     packer.pack_nil();
   else
     packer.pack(string->toStr());
