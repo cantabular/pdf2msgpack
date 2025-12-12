@@ -53,7 +53,7 @@ public:
     return OutputDev::needClipToCropBox();
   }
 
-  void setDefaultCTM(double *ctm) {
+  void setDefaultCTM(const double *ctm) {
     printf("setDefaultCTM\n");
     return OutputDev::setDefaultCTM(ctm);
   }
@@ -382,7 +382,7 @@ public:
     return OutputDev::endStringOp(A);
   }
 
-  void beginString(GfxState *A, GooString *B) {
+  void beginString(GfxState *A, const GooString *B) {
     printf("beginString\n");
     return OutputDev::beginString(A, B);
   }
@@ -393,20 +393,20 @@ public:
   }
 
   void drawChar(GfxState *A, double B, double C, double D, double E, double F,
-                double G, CharCode H, int I, Unicode *J, int K) {
+                double G, CharCode H, int I, const Unicode *J, int K) {
     auto s = toUTF8(J, K);
     // printf("drawChar(%s)\n", char(int(*J)));
     std::cout << "drawChar(" << s << ")" << std::endl;
     return OutputDev::drawChar(A, B, C, D, E, F, G, H, I, J, K);
   }
 
-  void drawString(GfxState *A, GooString *B) {
+  void drawString(GfxState *A, const GooString *B) {
     printf("drawString\n");
     return OutputDev::drawString(A, B);
   }
 
   bool beginType3Char(GfxState *A, double B, double C, double D, double E,
-                       CharCode F, Unicode *G, int H) {
+                       CharCode F, const Unicode *G, int H) {
     printf("beginType3Char\n");
     return OutputDev::beginType3Char(A, B, C, D, E, F, G, H);
   }
@@ -431,7 +431,7 @@ public:
     return OutputDev::incCharCount(A);
   }
 
-  void beginActualText(GfxState *A, GooString *B) {
+  void beginActualText(GfxState *A, const GooString *B) {
     printf("beginActualText\n");
     return OutputDev::beginActualText(A, B);
   }
@@ -464,7 +464,7 @@ public:
 
   void drawImage(GfxState *state, Object *ref, Stream *str, int width,
                  int height, GfxImageColorMap *colorMap, bool interpolate,
-                 int *maskColors, bool inlineImg) {
+                 const int *maskColors, bool inlineImg) {
     printf("drawImage\n");
     return OutputDev::drawImage(state, ref, str, width, height, colorMap,
                                 interpolate, maskColors, inlineImg);
@@ -497,17 +497,17 @@ public:
     return OutputDev::endMarkedContent(state);
   }
 
-  void beginMarkedContent(char *name, Dict *properties) {
+  void beginMarkedContent(const char *name, Dict *properties) {
     printf("beginMarkedContent\n");
     return OutputDev::beginMarkedContent(name, properties);
   }
 
-  void markPoint(char *name) {
+  void markPoint(const char *name) {
     printf("markPoint\n");
     return OutputDev::markPoint(name);
   }
 
-  void markPoint(char *name, Dict *properties) {
+  void markPoint(const char *name, Dict *properties) {
     printf("markPoint\n");
     return OutputDev::markPoint(name, properties);
   }
