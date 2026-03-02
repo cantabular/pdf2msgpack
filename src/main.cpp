@@ -140,17 +140,14 @@ static std::string fmt(const Object &o, const UnicodeMap *uMap) {
   auto s = o.getString();
 
   char buf[9];
-  Unicode *ucs4_out;
   std::vector<Unicode> ucs4 = TextStringToUCS4(s->toStr());
-  ucs4_out = (Unicode *)gmallocn(ucs4.size(), sizeof(Unicode));
-  memcpy(ucs4_out, ucs4.data(), ucs4.size() * sizeof(Unicode));
   auto len = ucs4.size();
 
   std::string out;
   out.reserve(static_cast<size_t>(len));
 
   for (unsigned long int i = 0; i < len; i++) {
-    auto n = uMap->mapUnicode(ucs4_out[i], buf, sizeof(buf));
+    auto n = uMap->mapUnicode(ucs4[i], buf, sizeof(buf));
     out.append(buf, n);
   }
 
