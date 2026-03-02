@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sensiblecodeio/pdf2msgpack/go/pkg/p2m"
+	"github.com/cantabular/pdf2msgpack/go/pkg/p2m"
 )
 
 func main() {

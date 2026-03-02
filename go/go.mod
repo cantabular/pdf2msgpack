@@ -1,4 +1,4 @@
-module github.com/sensiblecodeio/pdf2msgpack/go
+module github.com/cantabular/pdf2msgpack/go
 
 go 1.25.1
 
