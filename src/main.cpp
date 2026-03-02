@@ -199,7 +199,7 @@ void dump_font_info(PDFDoc *doc) {
 void pack_stream_content(Stream *stream) {
   GooString content;
 
-  stream->reset();
+  stream->rewind();
   stream->fillGooString(&content);
   stream->close();
 
