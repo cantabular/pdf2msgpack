@@ -103,7 +103,7 @@ ENV PKG_CONFIG_PATH="/src/vendor/github.com/uclouvain/openjpeg/build/install/lib
 
 RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cachebase \
     \
-    cd vendor/github.com/sensiblecodeio/poppler/ \
+    cd vendor/github.com/cantabular/poppler/ \
  && mkdir build && cd build \
  && cmake .. \
           -DCMAKE_INSTALL_PREFIX=$PWD/install \
@@ -124,9 +124,9 @@ RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cacheba
  && make V=1 -j${BUILD_CONCURRENCY} \
  && make install
 
-ENV PKG_CONFIG_PATH="/src/vendor/github.com/sensiblecodeio/poppler/build/install/lib/pkgconfig:$PKG_CONFIG_PATH" \
-    LINKFLAGS="-L/src/vendor/github.com/sensiblecodeio/poppler/build/install/lib $LINKFLAGS" \
-    CXXFLAGS="-I/src/vendor/github.com/sensiblecodeio/poppler/build/install/include $CXXFLAGS"
+ENV PKG_CONFIG_PATH="/src/vendor/github.com/cantabular/poppler/build/install/lib/pkgconfig:$PKG_CONFIG_PATH" \
+    LINKFLAGS="-L/src/vendor/github.com/cantabular/poppler/build/install/lib $LINKFLAGS" \
+    CXXFLAGS="-I/src/vendor/github.com/cantabular/poppler/build/install/include $CXXFLAGS"
 
 
 COPY --chown=nobody:nogroup ./src /src/src

@@ -10,9 +10,9 @@
 [submodule "vendor/github.com/uclouvain/openjpeg"]
 	path = vendor/github.com/uclouvain/openjpeg
 	url = https://github.com/uclouvain/openjpeg.git
-[submodule "vendor/anongit.freedesktop.org/git/poppler/poppler"]
-	path = vendor/github.com/sensiblecodeio/poppler
-	url = https://github.com/sensiblecodeio/poppler.git
+[submodule "vendor/github.com/cantabular/poppler"]
+	path = vendor/github.com/cantabular/poppler
+	url = https://github.com/cantabular/poppler.git
 	branch = pdf2msgpack
 [submodule "vendor/github.com/msgpack/msgpack-c"]
 	path = vendor/github.com/msgpack/msgpack-c
