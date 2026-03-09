@@ -457,7 +457,7 @@ void dump_page_bitmap(Page *page) {
 
   auto bitmap = dev->getBitmap();
 
-  auto data = reinterpret_cast<char *>(bitmap->getDataPtr());
+  auto data = static_cast<char *>(static_cast<void *>(bitmap->getDataPtr()));
 
   packer.pack_array(2);
   packer.pack(std::make_tuple(bitmap->getWidth(), bitmap->getHeight()));
