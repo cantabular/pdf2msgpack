@@ -39,6 +39,7 @@ std::string toUTF8(const TextWord *w) {
 
 // toUTF8 writes returns character of TextWord w in UTF-8.
 std::string toUTF8(const TextWord *w, int i) {
-	std::u32string s(reinterpret_cast<const char32_t*>(w->getChar(i)), 1);
+       std::u32string s;
+       s += static_cast<char32_t>(*w->getChar(i));
 	return toUTF8(s);
 }
