@@ -21,10 +21,10 @@ const int SET_FILL_COLOR = 15;
 typedef struct { double x, y; } Point;
 
 class Mat2x3 {
-  const double *m;
+  const std::array<double, 6> &m;
 
 public:
-  Mat2x3(const double m[6]) : m(m) {}
+  Mat2x3(const std::array<double, 6> &m) : m(m) {}
 
   inline const Point mul(const double x, const double y) const {
     auto xt = x * m[0] + y * m[2] + m[4];
