@@ -496,14 +496,14 @@ void dump_document(PDFDoc *doc, const Options &options) {
   }
 }
 
-BaseStream *open_file(const std::string filename) {
+std::unique_ptr<BaseStream> open_file(const std::string filename) {
   std::unique_ptr<GooFile> file = GooFile::open(filename);
   if (file == NULL) {
     std::cerr << "Failed to open " << filename << std::endl;
     exit(5);
   }
-  Object obj;
-  return new FileStream(file.release(), 0, false, file->size(), Object::null());
+  auto size = file->size();
+  return std::make_unique<FileStream>(file.release(), 0, false, size, Object::null());
 }
 
 std::string parse_page_range(std::string value, Options *options) {
@@ -612,7 +612,7 @@ int main(int argc, char *argv[]) {
     exit(127);
   }
 
-  std::unique_ptr<PDFDoc> doc(new PDFDoc(file));
+  std::unique_ptr<PDFDoc> doc(new PDFDoc(std::move(file)));
   if (!doc) {
     std::cerr << "Problem loading document." << std::endl;
     exit(64);
