@@ -53,7 +53,7 @@ public:
     return OutputDev::needClipToCropBox();
   }
 
-  void setDefaultCTM(const double *ctm) {
+  void setDefaultCTM(const std::array<double, 6> &ctm) {
     printf("setDefaultCTM\n");
     return OutputDev::setDefaultCTM(ctm);
   }
@@ -451,13 +451,13 @@ public:
 
   void setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
                                 int width, int height, bool invert,
-                                bool inlineImg, double *baseMatrix) {
+                                bool inlineImg, std::array<double, 6> &baseMatrix) {
     printf("setSoftMaskFromImageMask\n");
     return OutputDev::setSoftMaskFromImageMask(state, ref, str, width, height,
                                                invert, inlineImg, baseMatrix);
   }
 
-  void unsetSoftMaskFromImageMask(GfxState *state, double *baseMatrix) {
+  void unsetSoftMaskFromImageMask(GfxState *state, std::array<double, 6> &baseMatrix) {
     printf("unsetSoftMaskFromImageMask\n");
     return OutputDev::unsetSoftMaskFromImageMask(state, baseMatrix);
   }
