@@ -497,12 +497,12 @@ public:
     return OutputDev::markPoint(name, properties);
   }
 
-  void opiBegin(GfxState *state, Dict *opiDict) {
+  void opiBegin(GfxState *state, const Dict &opiDict) {
     printf("opiBegin\n");
     return OutputDev::opiBegin(state, opiDict);
   }
 
-  void opiEnd(GfxState *state, Dict *opiDict) {
+  void opiEnd(GfxState *state, const Dict &opiDict) {
     printf("opiEnd\n");
     return OutputDev::opiEnd(state, opiDict);
   }
