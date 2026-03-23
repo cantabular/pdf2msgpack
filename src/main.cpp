@@ -303,8 +303,6 @@ void dump_document_meta(const std::string filename, PDFDoc *doc,
   }
 }
 
-void TextPageDecRef(TextPage *text_page) { text_page->decRefCnt(); }
-
 void render_annotations(std::unique_ptr<Gfx> &gfx, Annots *annots) {
   gfx->saveState();
 
@@ -315,7 +313,7 @@ void render_annotations(std::unique_ptr<Gfx> &gfx, Annots *annots) {
   gfx->restoreState();
 }
 
-typedef std::unique_ptr<TextPage, decltype(&TextPageDecRef)> TextPagePtr;
+typedef std::unique_ptr<TextPage> TextPagePtr;
 
 TextPagePtr page_to_text_page(Page *page) {
   auto dev = std::make_unique<TextOutputDev>(nullptr, true, 0, false, false);
@@ -339,7 +337,7 @@ TextPagePtr page_to_text_page(Page *page) {
 
   dev->endPage();
 
-  return TextPagePtr(dev->takeText(), TextPageDecRef);
+  return dev->takeText();
 }
 
 int count_glyphs(const std::vector<std::vector<std::unique_ptr<TextWordSelection>>>& word_list) {
