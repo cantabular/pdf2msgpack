@@ -86,24 +86,9 @@ public:
     return OutputDev::dump();
   }
 
-  void cvtDevToUser(double dx, double dy, double *ux, double *uy) {
-    printf("cvtDevToUser\n");
-    return OutputDev::cvtDevToUser(dx, dy, ux, uy);
-  }
-
   void cvtUserToDev(double ux, double uy, int *dx, int *dy) {
     printf("cvtUserToDev\n");
     return OutputDev::cvtUserToDev(ux, uy, dx, dy);
-  }
-
-  const double *getDefCTM() {
-    printf("getDefCTM\n");
-    return OutputDev::getDefCTM();
-  }
-
-  const double *getDefICTM() {
-    printf("getDefICTM\n");
-    return OutputDev::getDefICTM();
   }
 
   void saveState(GfxState *A) {
