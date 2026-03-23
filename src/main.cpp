@@ -433,7 +433,7 @@ void dump_page_bitmap(Page *page) {
   // auto mode = splashModeRGB8;
   // const auto n_channels = 3;
 
-  auto dev = std::make_unique<SplashOutputDev>(mode, 4, false, paperColor,
+  auto dev = std::make_unique<SplashOutputDev>(mode, 4, paperColor,
                                                true, splashThinLineShape);
 
   dev->setFontAntialias(true);
