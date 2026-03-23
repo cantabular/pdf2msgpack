@@ -140,17 +140,13 @@ static std::string fmt(const Object &o, const UnicodeMap *uMap) {
   auto s = o.getString();
 
   char buf[9];
-  Unicode *ucs4_out;
   std::vector<Unicode> ucs4 = TextStringToUCS4(s->toStr());
-  ucs4_out = (Unicode *)gmallocn(ucs4.size(), sizeof(Unicode));
-  memcpy(ucs4_out, ucs4.data(), ucs4.size() * sizeof(Unicode));
-  auto len = ucs4.size();
 
   std::string out;
-  out.reserve(static_cast<size_t>(len));
+  out.reserve(ucs4.size());
 
-  for (unsigned long int i = 0; i < len; i++) {
-    auto n = uMap->mapUnicode(ucs4_out[i], buf, sizeof(buf));
+  for (const auto &uChar : ucs4) {
+    auto n = uMap->mapUnicode(uChar, buf, sizeof(buf));
     out.append(buf, n);
   }
 
@@ -199,7 +195,7 @@ void dump_font_info(PDFDoc *doc) {
 void pack_stream_content(Stream *stream) {
   GooString content;
 
-  stream->reset();
+  stream->rewind();
   stream->fillGooString(&content);
   stream->close();
 
@@ -307,8 +303,6 @@ void dump_document_meta(const std::string filename, PDFDoc *doc,
   }
 }
 
-void TextPageDecRef(TextPage *text_page) { text_page->decRefCnt(); }
-
 void render_annotations(std::unique_ptr<Gfx> &gfx, Annots *annots) {
   gfx->saveState();
 
@@ -319,7 +313,7 @@ void render_annotations(std::unique_ptr<Gfx> &gfx, Annots *annots) {
   gfx->restoreState();
 }
 
-typedef std::unique_ptr<TextPage, decltype(&TextPageDecRef)> TextPagePtr;
+typedef std::unique_ptr<TextPage> TextPagePtr;
 
 TextPagePtr page_to_text_page(Page *page) {
   auto dev = std::make_unique<TextOutputDev>(nullptr, true, 0, false, false);
@@ -343,7 +337,7 @@ TextPagePtr page_to_text_page(Page *page) {
 
   dev->endPage();
 
-  return TextPagePtr(dev->takeText(), TextPageDecRef);
+  return dev->takeText();
 }
 
 int count_glyphs(const std::vector<std::vector<std::unique_ptr<TextWordSelection>>>& word_list) {
@@ -439,7 +433,7 @@ void dump_page_bitmap(Page *page) {
   // auto mode = splashModeRGB8;
   // const auto n_channels = 3;
 
-  auto dev = std::make_unique<SplashOutputDev>(mode, 4, false, paperColor,
+  auto dev = std::make_unique<SplashOutputDev>(mode, 4, paperColor,
                                                true, splashThinLineShape);
 
   dev->setFontAntialias(true);
@@ -502,14 +496,14 @@ void dump_document(PDFDoc *doc, const Options &options) {
   }
 }
 
-BaseStream *open_file(const std::string filename) {
+std::unique_ptr<BaseStream> open_file(const std::string filename) {
   std::unique_ptr<GooFile> file = GooFile::open(filename);
   if (file == NULL) {
     std::cerr << "Failed to open " << filename << std::endl;
     exit(5);
   }
-  Object obj;
-  return new FileStream(file.release(), 0, false, file->size(), Object::null());
+  auto size = file->size();
+  return std::make_unique<FileStream>(file.release(), 0, false, size, Object::null());
 }
 
 std::string parse_page_range(std::string value, Options *options) {
@@ -618,7 +612,7 @@ int main(int argc, char *argv[]) {
     exit(127);
   }
 
-  std::unique_ptr<PDFDoc> doc(new PDFDoc(file));
+  std::unique_ptr<PDFDoc> doc(new PDFDoc(std::move(file)));
   if (!doc) {
     std::cerr << "Problem loading document." << std::endl;
     exit(64);

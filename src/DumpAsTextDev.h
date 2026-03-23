@@ -53,7 +53,7 @@ public:
     return OutputDev::needClipToCropBox();
   }
 
-  void setDefaultCTM(const double *ctm) {
+  void setDefaultCTM(const std::array<double, 6> &ctm) {
     printf("setDefaultCTM\n");
     return OutputDev::setDefaultCTM(ctm);
   }
@@ -86,24 +86,9 @@ public:
     return OutputDev::dump();
   }
 
-  void cvtDevToUser(double dx, double dy, double *ux, double *uy) {
-    printf("cvtDevToUser\n");
-    return OutputDev::cvtDevToUser(dx, dy, ux, uy);
-  }
-
   void cvtUserToDev(double ux, double uy, int *dx, int *dy) {
     printf("cvtUserToDev\n");
     return OutputDev::cvtUserToDev(ux, uy, dx, dy);
-  }
-
-  const double *getDefCTM() {
-    printf("getDefCTM\n");
-    return OutputDev::getDefCTM();
-  }
-
-  const double *getDefICTM() {
-    printf("getDefICTM\n");
-    return OutputDev::getDefICTM();
   }
 
   void saveState(GfxState *A) {
@@ -451,13 +436,13 @@ public:
 
   void setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
                                 int width, int height, bool invert,
-                                bool inlineImg, double *baseMatrix) {
+                                bool inlineImg, std::array<double, 6> &baseMatrix) {
     printf("setSoftMaskFromImageMask\n");
     return OutputDev::setSoftMaskFromImageMask(state, ref, str, width, height,
                                                invert, inlineImg, baseMatrix);
   }
 
-  void unsetSoftMaskFromImageMask(GfxState *state, double *baseMatrix) {
+  void unsetSoftMaskFromImageMask(GfxState *state, std::array<double, 6> &baseMatrix) {
     printf("unsetSoftMaskFromImageMask\n");
     return OutputDev::unsetSoftMaskFromImageMask(state, baseMatrix);
   }
@@ -512,12 +497,12 @@ public:
     return OutputDev::markPoint(name, properties);
   }
 
-  void opiBegin(GfxState *state, Dict *opiDict) {
+  void opiBegin(GfxState *state, const Dict &opiDict) {
     printf("opiBegin\n");
     return OutputDev::opiBegin(state, opiDict);
   }
 
-  void opiEnd(GfxState *state, Dict *opiDict) {
+  void opiEnd(GfxState *state, const Dict &opiDict) {
     printf("opiEnd\n");
     return OutputDev::opiEnd(state, opiDict);
   }
