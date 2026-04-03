@@ -367,7 +367,7 @@ public:
     return OutputDev::endStringOp(A);
   }
 
-  void beginString(GfxState *A, const GooString *B) {
+  void beginString(GfxState *A, const std::string &B) {
     printf("beginString\n");
     return OutputDev::beginString(A, B);
   }
@@ -385,7 +385,7 @@ public:
     return OutputDev::drawChar(A, B, C, D, E, F, G, H, I, J, K);
   }
 
-  void drawString(GfxState *A, const GooString *B) {
+  void drawString(GfxState *A, const std::string &B) {
     printf("drawString\n");
     return OutputDev::drawString(A, B);
   }
@@ -416,7 +416,7 @@ public:
     return OutputDev::incCharCount(A);
   }
 
-  void beginActualText(GfxState *A, const GooString *B) {
+  void beginActualText(GfxState *A, const std::string &B) {
     printf("beginActualText\n");
     return OutputDev::beginActualText(A, B);
   }
