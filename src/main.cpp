@@ -137,10 +137,10 @@ static std::string fmt(const Object &o, const UnicodeMap *uMap) {
   if (!o.isString())
     return "<not string>";
 
-  auto s = o.getString();
+  const std::string &s = o.getString();
 
   char buf[9];
-  std::vector<Unicode> ucs4 = TextStringToUCS4(s->toStr());
+  std::vector<Unicode> ucs4 = TextStringToUCS4(s);
 
   std::string out;
   out.reserve(ucs4.size());
