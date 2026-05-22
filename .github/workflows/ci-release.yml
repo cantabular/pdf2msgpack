@@ -39,46 +39,13 @@ jobs:
         run: |
           sha256sum pdf2msgpack pdf2msgpack.dbg > SHA256SUMS
 
-      - name: Create Release
-        id: create-release
-        uses: actions/create-release@v1
+      - name: Create draft release and upload assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: true
-          prerelease: false
-      
-      - name: Upload Linux binary
-        id: upload-linux-binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./pdf2msgpack
-          asset_name: pdf2msgpack
-          asset_content_type: application/octet-stream
-
-      - name: Upload Linux debug symbols
-        id: upload-debug-symbols
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./pdf2msgpack.dbg
-          asset_name: pdf2msgpack.dbg
-          asset_content_type: application/octet-stream
-
-      - name: Upload SHA256SUMS to GitHub
-        id: upload-sha256sums
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./SHA256SUMS
-          asset_name: SHA256SUMS
-          asset_content_type: text/plain
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "${{ github.ref_name }}" \
+            --draft \
+            ./pdf2msgpack \
+            ./pdf2msgpack.dbg \
+            ./SHA256SUMS
