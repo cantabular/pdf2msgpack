@@ -434,7 +434,7 @@ public:
                                     interpolate, inlineImg);
   }
 
-  void setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
+  bool setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
                                 int width, int height, bool invert,
                                 bool inlineImg, std::array<double, 6> &baseMatrix) {
     printf("setSoftMaskFromImageMask\n");
