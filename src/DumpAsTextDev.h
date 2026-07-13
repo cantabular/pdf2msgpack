@@ -434,7 +434,7 @@ public:
                                     interpolate, inlineImg);
   }
 
-  void setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
+  bool setSoftMaskFromImageMask(GfxState *state, Object *ref, Stream *str,
                                 int width, int height, bool invert,
                                 bool inlineImg, std::array<double, 6> &baseMatrix) {
     printf("setSoftMaskFromImageMask\n");
@@ -482,17 +482,17 @@ public:
     return OutputDev::endMarkedContent(state);
   }
 
-  void beginMarkedContent(const char *name, Dict *properties) {
+  void beginMarkedContent(const std::string &name, Dict *properties) {
     printf("beginMarkedContent\n");
     return OutputDev::beginMarkedContent(name, properties);
   }
 
-  void markPoint(const char *name) {
+  void markPoint(const std::string &name) {
     printf("markPoint\n");
     return OutputDev::markPoint(name);
   }
 
-  void markPoint(const char *name, Dict *properties) {
+  void markPoint(const std::string &name, Dict *properties) {
     printf("markPoint\n");
     return OutputDev::markPoint(name, properties);
   }
@@ -549,7 +549,7 @@ public:
     return OutputDev::paintTransparencyGroup(A, B);
   }
 
-  void setSoftMask(GfxState *A, const std::array<double, 4> &B, bool C, Function *D, GfxColor *E) {
+  void setSoftMask(GfxState *A, const std::array<double, 4> &B, bool C, Function *D, const GfxColor &E) {
     printf("setSoftMask\n");
     return OutputDev::setSoftMask(A, B, C, D, E);
   }
