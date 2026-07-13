@@ -19,6 +19,7 @@
 #include <Gfx.h>
 #include <GlobalParams.h>
 #include <PDFDoc.h>
+#include <Annot.h>
 #include <Page.h>
 #include <SplashOutputDev.h>
 #include <Stream.h>
