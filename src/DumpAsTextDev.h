@@ -549,7 +549,7 @@ public:
     return OutputDev::paintTransparencyGroup(A, B);
   }
 
-  void setSoftMask(GfxState *A, const std::array<double, 4> &B, bool C, Function *D, GfxColor *E) {
+  void setSoftMask(GfxState *A, const std::array<double, 4> &B, bool C, Function *D, const GfxColor &E) {
     printf("setSoftMask\n");
     return OutputDev::setSoftMask(A, B, C, D, E);
   }
