@@ -482,17 +482,17 @@ public:
     return OutputDev::endMarkedContent(state);
   }
 
-  void beginMarkedContent(const char *name, Dict *properties) {
+  void beginMarkedContent(const std::string &name, Dict *properties) {
     printf("beginMarkedContent\n");
     return OutputDev::beginMarkedContent(name, properties);
   }
 
-  void markPoint(const char *name) {
+  void markPoint(const std::string &name) {
     printf("markPoint\n");
     return OutputDev::markPoint(name);
   }
 
-  void markPoint(const char *name, Dict *properties) {
+  void markPoint(const std::string &name, Dict *properties) {
     printf("markPoint\n");
     return OutputDev::markPoint(name, properties);
   }
