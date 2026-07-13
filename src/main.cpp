@@ -397,7 +397,7 @@ void dump_page_glyphs(Page *page) {
 
   PDFRectangle whole_page(-inf, -inf, inf, inf);
 
-  auto word_list = text->getSelectionWords(&whole_page, selectionStyleGlyph);
+  auto word_list = text->getSelectionWords(whole_page, selectionStyleGlyph);
 
   int total_glyphs = count_glyphs(word_list);
 
