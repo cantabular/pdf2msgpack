@@ -120,6 +120,7 @@ RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cacheba
           -DENABLE_QT5:BOOL=OFF \
           -DENABLE_QT6:BOOL=OFF \
           -DENABLE_LIBCURL:BOOL=OFF \
+          -DENABLE_HARFBUZZ=OFF \
  && ninja -C build -j${BUILD_CONCURRENCY} install
 
 
