@@ -31,6 +31,8 @@ RUN --mount=type=cache,target=/etc/apk/cache,id=apk-cache \
       libpng-static \
       libtool \
       linux-headers \
+      meson \
+      ninja \
       python3 \
       util-linux-dev \
       util-linux-static \
@@ -60,19 +62,14 @@ ENV PKG_CONFIG_PATH="/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/
     # Required for poppler cmake \
     FREETYPE_DIR=/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install
 
-
 RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cachebase \
     \
     cd vendor/gitlab.freedesktop.org/fontconfig/fontconfig/ \
- && NOCONFIGURE=1 ./autogen.sh \
- && mkdir build && cd build \
- && ../configure --prefix=$PWD/install --enable-static \
- && make -j${BUILD_CONCURRENCY} \
- && make install
+ && meson setup build --prefix=$PWD/build/install --default-library=static \
+ && ninja -C build -j${BUILD_CONCURRENCY} install
 
 ENV PKG_CONFIG_PATH="/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib/pkgconfig:$PKG_CONFIG_PATH" \
     LINKFLAGS="-L/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib $LINKFLAGS"
-
 
 RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cachebase \
     \
@@ -107,6 +104,8 @@ RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cacheba
  && mkdir build && cd build \
  && cmake .. \
           -DCMAKE_INSTALL_PREFIX=$PWD/install \
+          -DBUILD_TESTS=OFF \
+          -DBUILD_MANUAL_TESTS=OFF \
           -DENABLE_GLIB:BOOL=OFF \
           -DENABLE_CPP:BOOL=OFF \
           -DENABLE_UTILS:BOOL=OFF \
