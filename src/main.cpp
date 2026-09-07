@@ -194,14 +194,14 @@ void dump_font_info(PDFDoc *doc) {
 }
 
 void pack_stream_content(Stream *stream) {
-  GooString content;
+  std::string content;
 
   stream->rewind();
-  stream->fillGooString(&content);
+  stream->fillString(content);
   stream->close();
 
   packer.pack_bin(content.size());
-  packer.pack_bin_body(content.toStr().c_str(), content.size());
+  packer.pack_bin_body(content.data(), content.size());
 }
 
 void pack_string(const GooString *string) {
