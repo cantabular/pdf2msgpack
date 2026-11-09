@@ -14,6 +14,7 @@
 
 // /usr/include/poppler/...
 #include <DateInfo.h>
+#include <Error.h>
 #include <FileSpec.h>
 #include <FontInfo.h>
 #include <Gfx.h>
@@ -38,6 +39,44 @@
 #include "DumpPathsAsMsgPackDev.h"
 
 msgpack::packer<std::ostream> packer(&std::cout);
+
+static const char *error_category_name(ErrorCategory category) {
+  switch (category) {
+  case errSyntaxWarning:
+    return "Syntax Warning";
+  case errSyntaxError:
+    return "Syntax Error";
+  case errConfig:
+    return "Config Error";
+  case errCommandLine:
+    return "Command Line Error";
+  case errIO:
+    return "I/O Error";
+  case errNotAllowed:
+    return "Permission Error";
+  case errUnimplemented:
+    return "Unimplemented Feature";
+  case errInternal:
+    return "Internal Error";
+  }
+  return "Unknown Error";
+}
+
+static void poppler_error_callback(ErrorCategory category, Goffset position,
+                                   const char *message) {
+  if (category == errSyntaxError &&
+      strcmp(message, "Unknown filter 'JPXDecode'") == 0) {
+    return;
+  }
+
+  if (position >= 0) {
+    fprintf(stderr, "%s (%lld): %s\n", error_category_name(category),
+            static_cast<long long>(position), message);
+  } else {
+    fprintf(stderr, "%s: %s\n", error_category_name(category), message);
+  }
+  fflush(stderr);
+}
 
 #ifndef DISABLE_SYSCALL_FILTER
 #include "seccomp-bpf.h"
@@ -591,6 +630,7 @@ void usage() {
 }
 
 int main(int argc, char *argv[]) {
+  setErrorCallback(poppler_error_callback);
 
   Options options;
   auto err = parse_options(argc, argv, &options);
