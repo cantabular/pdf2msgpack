@@ -61,15 +61,6 @@ RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cacheba
  && ninja -C build -j${BUILD_CONCURRENCY} install
 
 
-# --- PARALLEL STAGE 1C: OpenJPEG ---
-FROM build-base AS build-openjpeg
-COPY --chown=nobody:nogroup ./vendor/github.com/uclouvain/openjpeg /src/vendor/github.com/uclouvain/openjpeg
-RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cachebase \
-    cd vendor/github.com/uclouvain/openjpeg/ \
- && cmake -B build -G Ninja -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$PWD/build/install \
- && ninja -C build -j${BUILD_CONCURRENCY} install
-
-
 # --- STAGE 2: Fontconfig (Requires FreeType) ---
 FROM build-base AS build-fontconfig
 COPY --from=build-freetype /src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install /src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install
@@ -90,14 +81,10 @@ FROM build-base AS build-poppler
 COPY --from=build-freetype /src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install /src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install
 COPY --from=build-fontconfig /src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install /src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install
 COPY --from=build-lcms /src/vendor/github.com/mm2/Little-CMS/build/install /src/vendor/github.com/mm2/Little-CMS/build/install
-COPY --from=build-openjpeg /src/vendor/github.com/uclouvain/openjpeg/build/install /src/vendor/github.com/uclouvain/openjpeg/build/install
 COPY --chown=nobody:nogroup ./vendor/github.com/cantabular/poppler /src/vendor/github.com/cantabular/poppler
 
-ENV PKG_CONFIG_PATH="/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib/pkgconfig:/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib/pkgconfig:/src/vendor/github.com/mm2/Little-CMS/build/install/lib/pkgconfig:/src/vendor/github.com/uclouvain/openjpeg/build/install/lib/pkgconfig:$PKG_CONFIG_PATH" \
-    LINKFLAGS="-L/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib -L/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib -L/src/vendor/github.com/mm2/Little-CMS/build/install/lib -L/src/vendor/github.com/uclouvain/openjpeg/build/install/lib $LINKFLAGS" \
-    CXXFLAGS="-I/src/vendor/github.com/uclouvain/openjpeg/build/install/include $CXXFLAGS" \
-    LDFLAGS="-L/src/vendor/github.com/uclouvain/openjpeg/build/install/lib $LDFLAGS" \
-    OpenJPEG_DIR="/src/vendor/github.com/uclouvain/openjpeg/build/install/lib/cmake/openjpeg-2.5" \
+ENV PKG_CONFIG_PATH="/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib/pkgconfig:/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib/pkgconfig:/src/vendor/github.com/mm2/Little-CMS/build/install/lib/pkgconfig" \
+    LINKFLAGS="-L/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib -L/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib -L/src/vendor/github.com/mm2/Little-CMS/build/install/lib" \
     FREETYPE_DIR=/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install
 
 RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cachebase \
@@ -113,7 +100,7 @@ RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cacheba
           -DBUILD_SHARED_LIBS:BOOL=OFF \
           -DENABLE_UNSTABLE_API_ABI_HEADERS:BOOL=ON \
           -DCMAKE_BUILD_TYPE:STRING=release \
-          -DENABLE_LIBOPENJPEG:STRING=openjpeg2 \
+          -DENABLE_LIBOPENJPEG:STRING=OFF \
           -DENABLE_NSS3:BOOL=OFF \
           -DENABLE_GPGME:BOOL=OFF \
           -DENABLE_LIBTIFF:BOOL=OFF \
@@ -121,6 +108,7 @@ RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cacheba
           -DENABLE_QT6:BOOL=OFF \
           -DENABLE_LIBCURL:BOOL=OFF \
           -DENABLE_HARFBUZZ=OFF \
+          -DENABLE_BROTLI=OFF \
  && ninja -C build -j${BUILD_CONCURRENCY} install
 
 
@@ -129,15 +117,14 @@ FROM build-base AS final
 COPY --from=build-freetype /src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install /src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install
 COPY --from=build-fontconfig /src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install /src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install
 COPY --from=build-lcms /src/vendor/github.com/mm2/Little-CMS/build/install /src/vendor/github.com/mm2/Little-CMS/build/install
-COPY --from=build-openjpeg /src/vendor/github.com/uclouvain/openjpeg/build/install /src/vendor/github.com/uclouvain/openjpeg/build/install
 COPY --from=build-poppler /src/vendor/github.com/cantabular/poppler/build/install /src/vendor/github.com/cantabular/poppler/build/install
 
 COPY --chown=nobody:nogroup ./vendor/github.com/msgpack/msgpack-c /src/vendor/github.com/msgpack/msgpack-c
 COPY --chown=nobody:nogroup ./src /src/src
 COPY --chown=nobody:nogroup waf wscript .
 
-ENV PKG_CONFIG_PATH="/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib/pkgconfig:/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib/pkgconfig:/src/vendor/github.com/mm2/Little-CMS/build/install/lib/pkgconfig:/src/vendor/github.com/uclouvain/openjpeg/build/install/lib/pkgconfig:/src/vendor/github.com/cantabular/poppler/build/install/lib/pkgconfig:$PKG_CONFIG_PATH" \
-    LINKFLAGS="-L/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib -L/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib -L/src/vendor/github.com/mm2/Little-CMS/build/install/lib -L/src/vendor/github.com/uclouvain/openjpeg/build/install/lib -L/src/vendor/github.com/cantabular/poppler/build/install/lib $LINKFLAGS" \
+ENV PKG_CONFIG_PATH="/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib/pkgconfig:/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib/pkgconfig:/src/vendor/github.com/mm2/Little-CMS/build/install/lib/pkgconfig:/src/vendor/github.com/cantabular/poppler/build/install/lib/pkgconfig:$PKG_CONFIG_PATH" \
+    LINKFLAGS="-L/src/vendor/gitlab.freedesktop.org/freetype/freetype/build/install/lib -L/src/vendor/gitlab.freedesktop.org/fontconfig/fontconfig/build/install/lib -L/src/vendor/github.com/mm2/Little-CMS/build/install/lib -L/src/vendor/github.com/cantabular/poppler/build/install/lib $LINKFLAGS" \
     CXXFLAGS="-I/src/vendor/github.com/cantabular/poppler/build/install/include $CXXFLAGS"
 
 RUN --mount=type=cache,src=/tmp/ccache,target=/tmp/ccache,id=ccache,from=cachebase \

@@ -7,9 +7,6 @@
 [submodule "vendor/github.com/mm2/Little-CMS"]
 	path = vendor/github.com/mm2/Little-CMS
 	url = https://github.com/mm2/Little-CMS.git
-[submodule "vendor/github.com/uclouvain/openjpeg"]
-	path = vendor/github.com/uclouvain/openjpeg
-	url = https://github.com/uclouvain/openjpeg.git
 [submodule "vendor/github.com/cantabular/poppler"]
 	path = vendor/github.com/cantabular/poppler
 	url = https://github.com/cantabular/poppler.git
