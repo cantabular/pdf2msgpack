@@ -71,7 +71,7 @@ def configure(ctx):
                       args=['--cflags', '--libs', '--static'])
 
         poppler_stlib = (
-            "fontconfig uuid intl expat freetype lcms2 openjp2 jpeg png bz2 z pthread"
+            "fontconfig uuid intl expat freetype lcms2 jpeg png bz2 z pthread"
         )
         for lib in poppler_stlib.split():
             ctx.check_cxx(stlib=lib, uselib_store='poppler')
